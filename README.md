@@ -10,7 +10,18 @@ I was inspired to make this because I saw a clip from PirateSoftware (aka Thor) 
 
 ## Current Status
 
-Right now, I have started planning the project and created this README. I will do a lot more soon. Once I get started, I'll put a list here of the features that need to be added until I'm happy to make a full release - both to help me keep track of things, help anyone who is waiting for the release have an idea of how long it will be and to give anyone who wants to contribute some ideas of what to do. Speaking of contribution...
+Right now, I have started planning the project and created this README. Below is a list here of the features that need to be added until I'm happy to make a full release - both to help me keep track of things, help anyone who is waiting for the release have an idea of how long it will be and to give anyone who wants to contribute some ideas of what to do.
+
+**Todo List:**
+*Changes coming very soon:*
+- Add requirements functionality to Timeline class
+- Finish unit tests for Timeline and Command classes
+- Add command subclasses (will elaborate more once I start work on them)
+- Add GameMaker import functionality (will elaborate more once I start work on it)
+- Build UI (will elaborate more once I start work on it)
+*Changes coming in the further future:*
+- Branching timeline
+- Python modding framework
 
 ## How to Contribute
 
