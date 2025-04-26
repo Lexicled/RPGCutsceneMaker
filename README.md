@@ -17,7 +17,7 @@ Right now, I have started planning the project and created this README. Below is
 *Changes coming very soon:*
 
 - Add requirements functionality to Timeline class
-- Finish unit tests for Timeline and Command classes
+- Finish unit tests for Command class
 - Add command subclasses (will elaborate more once I start work on them)
 - Add GameMaker import functionality (will elaborate more once I start work on it)
 - Build UI (will elaborate more once I start work on it)

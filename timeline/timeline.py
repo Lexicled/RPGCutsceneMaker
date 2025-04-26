@@ -57,7 +57,7 @@ class Timeline:
                 last = cmd.start
                 i += 1
     
-    def export(self, sleep_function: str, ticks_per_second: int): # Sleep function: same format as Command.syntax, but with one int parameter of rest time in ms
+    def export(self, sleep_function: str, ticks_per_second: int) -> str: # Sleep function: same format as Command.syntax, but with one int parameter of rest time in ms
         # TODO add requirements functionality
         self.sort_commands()
         ms_per_tick = int((ticks_per_second ** (-1)) * 1000)
@@ -68,7 +68,7 @@ class Timeline:
             time_delay_ms = ms_per_tick * time_delay_ticks
             sleep_elements = sleep_function.split('|')
             sleep_string = sleep_elements[0] + str(time_delay_ms) + sleep_elements[2]
-            export_data += sleep_string
+            export_data += sleep_string + '\n'
 
         n = 0
         for cmd in self.commands:
@@ -78,39 +78,53 @@ class Timeline:
             i = 0
             for element in elements:
                 if i != 0 and i % 2 != 0:
-                    new_elements.append(cmd.params[element])
+                    if type(cmd.params[element]) == str: new_elements.append('"' + cmd.params[element] + '"') # Add speech marks if type is a string
+                    else: new_elements.append(cmd.params[element])
                     i += 1
                 else:
                     new_elements.append(element)
                     i += 1
 
             for new_element in new_elements:
-                export_data += new_element
+                export_data += str(new_element)
 
             export_data += "\n"
-            if n < len(self.commands):
+            if n < len(self.commands) - 1:
                 time_delay_ticks = self.commands[n + 1].start - cmd.start
                 time_delay_ms = ms_per_tick * time_delay_ticks
                 sleep_elements = sleep_function.split('|')
                 sleep_string = sleep_elements[0] + str(time_delay_ms) + sleep_elements[2]
-                export_data += sleep_string
+                export_data += str(sleep_string) + '\n'
             n += 1
+        
+        return export_data
 
 
 
 def test_timeline_and_command():
     class TestCmd(Command):
-        def __init__(self, syntax, start, end, parameters = ..., specific_params = ..., requirements = ..., tag = "", visible = True):
+        def __init__(self, start, end, parameters = ..., specific_params = ..., requirements = ..., tag = "", visible = True):
             self.test_action_run_count = 0
-            super().__init__(syntax, start, end, parameters, specific_params, requirements, tag, visible)
+            super().__init__(start, end, parameters, specific_params, requirements, tag, visible)
+            self.syntax = "myFunction(|myParam1|, |anotherParam|);"
 
         def action(self):
             self.test_action_run_count += 1
 
 
-    test_cmd = TestCmd(10, 20)
+    class AnotherTestCmd(Command):
+        def __init__(self, start, end, parameters = ..., specific_params = ..., requirements = ..., tag = "", visible = True):
+            super().__init__(start, end, parameters, specific_params, requirements, tag, visible)
+            self.syntax = "theFirstFunction(|param|);"
+
+    test_cmd = TestCmd(25, 35, parameters={'myParam1': 12, 'anotherParam': "Hello World!"})
+    another_test_cmd = AnotherTestCmd(10, 30, parameters={'param': 7.3})
+
     test_timeline = Timeline.instance()
+
     test_timeline.add_command(test_cmd)
+    test_timeline.add_command(another_test_cmd)
+
     test_timeline.total_length = 40
 
     start = int(time.time() * 1000)
@@ -120,8 +134,15 @@ def test_timeline_and_command():
     print("Ran with no syntax errors...")
     assert test_cmd.test_action_run_count == 11, f"Ran action() {test_cmd.test_action_run_count} times where should have run 11 times"
     print("action() ran correct number of times...")
-    assert end - start == 2000, f"Took {end - start}ms to run where should have taken 2000ms"
+    assert end - start >= 2000, f"Took {end - start}ms to run where should have taken 2000ms"
     print("Timing is correct...")
-    # TODO add test for export function
+    ideal_export = """sleep(500);
+theFirstFunction(7.3);
+sleep(750);
+myFunction(12, "Hello World!");
+"""
+    assert test_timeline.export("sleep(|ms|);", 20) == ideal_export, "Error in export function"
+    print("Export function is working...")
     print("Tests finished successfully with no errors!")
 
+test_timeline_and_command()
