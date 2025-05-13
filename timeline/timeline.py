@@ -100,7 +100,7 @@ class Timeline:
         return export_data
 
 
-
+#TODO learn how to do proper unit tests
 def test_timeline_and_command():
     class TestCmd(Command):
         def __init__(self, start, end, parameters = ..., specific_params = ..., requirements = ..., tag = "", visible = True):
@@ -140,7 +140,7 @@ def test_timeline_and_command():
 theFirstFunction(7.3);
 sleep(750);
 myFunction(12, "Hello World!");
-"""
+""" # Unfortunately, this ugly indentation is needed for the test to run properly - I'm sorry
     assert test_timeline.export("sleep(|ms|);", 20) == ideal_export, "Error in export function"
     print("Export function is working...")
     print("Tests finished successfully with no errors!")
